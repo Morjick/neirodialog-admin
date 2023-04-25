@@ -1,5 +1,6 @@
 // layouts
 import DefaultLayout from '../layout/default.vue'
+import AuthLayout from '../layout/auth.vue'
 
 // libs
 import { createRouter, createWebHistory } from 'vue-router'
@@ -12,8 +13,9 @@ import { TodoPage } from 'pages/todo'
 import { CalendarPage } from 'pages/calendar'
 import { UsersPage } from 'pages/users'
 import { ManagmentPage } from 'pages/managment'
-import { ProductsPage } from 'pages/products/products'
+import { ProductPage, ProductsPage } from 'pages/products/products'
 import { LearnPage } from 'pages/learn'
+import { AuthPage } from 'pages/auth'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -21,6 +23,13 @@ export const router = createRouter({
     {
       path: '/',
       component: DefaultLayout,
+      beforeEnter: (to, from) => {
+        const isAuth = localStorage.getItem('neirodialog-admin-token')
+
+        if (!isAuth) {
+          return '/auth'
+        }
+      },
       children: [
         { path: '/', component: AnalyticsPage, },
         { path: '/email', component: EmailPage, },
@@ -30,7 +39,22 @@ export const router = createRouter({
         { path: '/users', component: UsersPage, },
         { path: '/managment', component: ManagmentPage, },
         { path: '/product', component: ProductsPage, },
+        { path: '/product/:href', component: ProductPage, },
         { path: '/learn', component: LearnPage, },
+      ],
+    },
+    {
+      path: '/auth',
+      component: AuthLayout,
+      beforeEnter: (to, from) => {
+        const isAuth = localStorage.getItem('neirodialog-admin-token')
+
+        if (isAuth) {
+          return '/'
+        }
+      },
+      children: [
+        { path: '/', component: { AuthPage, }, },
       ],
     },
   ],

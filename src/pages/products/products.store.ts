@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 enum ProductTypeEnum {
   electronic = 'electronic',
   physical = 'physical'
@@ -5,13 +7,14 @@ enum ProductTypeEnum {
 
 interface Product {
   id: number
-  title: string
+  name: string
   desc: string
   price?: number
   basePrice: number
   discount?: number
   count?: number
   inStock?: boolean
+  inMainPage?: boolean
   href: string
   type: ProductTypeEnum
 }
@@ -20,20 +23,15 @@ interface ProductStoreI {
   products: Product[]
 }
 
+interface ProductResponseI {
+  ok: boolean
+  message: string
+  products: Product[]
+}
+
 const productStore = {
-  state: () => ({
-    products: [
-      {
-        id: 1,
-        title: 'Набор для мальчиков',
-        desc: 'Крутой набор',
-        basePrice: 12000,
-        discount: 10,
-        count: 152,
-        inStock: true,
-        type: ProductTypeEnum.physical,
-      },
-    ] as Product[],
+  state: (): ProductStoreI => ({
+    products: [],
   }),
   getters: {
     getProducts (state: ProductStoreI): Product[] {
@@ -55,8 +53,25 @@ const productStore = {
     },
   },
   actions: {
-    async createProduct (action: any, product: Product) {
+    async createProduct (action: any, product: Product) {},
+    async uploadImage (action: any, image: any) {
+      const response = await axios.post('files/upload-file', {
+        file: image,
+      }, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
 
+      return response
+    },
+  },
+  mutations: {
+    async addProducts (state: ProductStoreI, data: ProductResponseI) {
+      state.products = [...state.products, ...data.products, ]
+    },
+    async setProducts (state: ProductStoreI, data: ProductResponseI) {
+      state.products = data.products
     },
   },
 }

@@ -36,18 +36,18 @@ const menu: MenuItem[] = [
     title: 'Email',
     path: '/email',
   },
-  {
-    title: 'Чат',
-    path: '/chat',
-  },
-  {
-    title: 'Список дел',
-    path: '/todo',
-  },
-  {
-    title: 'Календарь событий',
-    path: '/calendar',
-  },
+  // {
+  //   title: 'Чат',
+  //   path: '/chat',
+  // },
+  // {
+  //   title: 'Список дел',
+  //   path: '/todo',
+  // },
+  // {
+  //   title: 'Календарь событий',
+  //   path: '/calendar',
+  // },
   {
     title: 'Пользователи',
     path: '/users',

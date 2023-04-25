@@ -1,3 +1,4 @@
+import { authStore } from 'pages/auth/auth.store'
 import { ChatStore } from 'pages/chat/chat.store'
 import { productStore } from 'pages/products/products.store'
 import { todoStore } from 'pages/todo/todo.store'
@@ -10,6 +11,7 @@ const store = createStore({
     todo: todoStore,
     chat: ChatStore,
     products: productStore,
+    auth: authStore,
   },
 })
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="users-"></div>
+  <div class="users">{{ users }}</div>
 </template>
 
 <script lang="ts">
@@ -10,12 +10,24 @@ export default defineComponent({
   data: () => ({}),
   components: {},
   props: {},
-  computed: {},
-  methods: {},
-  mounted () {},
+  computed: {
+    users () {
+      return this.$store.getters.getManyUsers
+    },
+  },
+  methods: {
+    async getManyUsers () {
+      const users = await this.axios.get('auth/get-many')
+
+      console.log(users)
+    },
+  },
+  mounted () {
+    this.getManyUsers()
+  },
 })
 </script>
 
 <style lang="scss">
-// .users- {}
+// .users {}
 </style>

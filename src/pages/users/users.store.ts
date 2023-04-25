@@ -9,6 +9,7 @@ interface userI {
 interface UserState {
   mainUser: userI
   otherProfiles: userI[]
+  users: userI[]
 }
 
 const mainUser: userI = {
@@ -39,10 +40,17 @@ const users: userI[] = [
   },
 ]
 
+interface ManyUsersI {
+  users: userI[]
+  ok: boolean
+  message: string
+}
+
 const UserStore = {
   state: (): UserState => ({
     mainUser,
     otherProfiles: users,
+    users: [],
   }),
   getters: {
     getUser (state: UserState): userI {
@@ -51,7 +59,15 @@ const UserStore = {
     getOtherProfiles (state: UserState): userI[] {
       return state.otherProfiles
     },
+    getManyUsers (state: UserState) {      
+      return state.users
+    }
   },
+  mutations: {
+    setManyUsers (state: UserState, data: ManyUsersI) {
+      state.users = [...state.users, ...data.users]
+    }
+  }
 }
 
 export {

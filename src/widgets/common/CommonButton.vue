@@ -1,6 +1,7 @@
 <template>
   <button
     class="common-button"
+    :class="[mod]"
   >{{ text }}</button>
 </template>
 
@@ -16,6 +17,10 @@ export default defineComponent({
       type: String,
       default: 'Подтвердить',
     },
+    mod: {
+      type: String,
+      default: 'primery',
+    },
   },
   computed: {},
   methods: {},
@@ -25,9 +30,17 @@ export default defineComponent({
 
 <style lang="scss">
 .common-button {
-  background: var(--primary-color);
   border-radius: 4px;
-  color: var(--font-alternative-color);
   padding: 5px;
+
+  &.primery {
+    background: var(--primary-color);
+    color: var(--font-alternative-color);
+  }
+
+  &.danger {
+    background: var(--danger-color);
+    color: var(--font-alternative-color);
+  }
 }
 </style>

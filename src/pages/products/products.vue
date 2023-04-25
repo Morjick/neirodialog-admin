@@ -3,7 +3,8 @@
     <div class="products-sidebar">
       <div style="padding: 20px;">
         <common-button
-          text="Создать продукт"
+          :text="type === 'list' ? 'Создать продукт' : 'Смотреть продукты'"
+          @click="changeType"
           style="width: 100%; height: 40px;"
         />
       </div>
@@ -15,12 +16,24 @@
           @changeValue="searchProducts"
         />
       </div>
-      <div class="products-body-list">
+      <div
+        v-if="type === 'list'"
+        class="products-body-list"
+      >
         <product-list-item
           v-for="product in products"
           :key="product.id"
           :product="product"
         />
+        <loader-wiget
+          v-if="load"
+        />
+      </div>
+      <div
+        v-if="type === 'create'"
+        class="products-body-create"
+      >
+        <create-product-form @changeType="updateProduct" />
       </div>
     </div>
   </div>
@@ -31,17 +44,29 @@ import { defineComponent } from 'vue'
 import CommonButtonVue from 'widgets/common/CommonButton.vue'
 import CommonSearchVue from 'widgets/common/CommonSearch.vue'
 import ProductListItemVue from 'widgets/pages/products/ProductListItem.vue'
+import LoaderWigetVue from 'widgets/global/Loader.vue'
 import { Product } from './products.store'
+import CreateProductFormVue from 'widgets/pages/products/CreateProductForm.vue'
 
 const CommonSearch: any = CommonSearchVue
 const ProductListItem: any = ProductListItemVue
+const CreateProductForm: any = CreateProductFormVue
 
 const CommonButton: any = CommonButtonVue
+const LoaderWiget: any = LoaderWigetVue
+
+enum Type {
+  LIST = 'list',
+  CREATE = 'create'
+}
 
 export default defineComponent({
   name: 'ProductsPage',
-  data: () => ({}),
-  components: { CommonButton, CommonSearch, ProductListItem, },
+  data: () => ({
+    type: 'list' as Type,
+    load: true,
+  }),
+  components: { CommonButton, CommonSearch, ProductListItem, LoaderWiget, CreateProductForm, },
   props: {},
   computed: {
     products (): Product[] {
@@ -50,8 +75,32 @@ export default defineComponent({
   },
   methods: {
     searchProducts () {},
+    changeType () {
+      this.type = this.type === Type.LIST ? Type.CREATE : Type.LIST
+    },
+    async updateProduct () {
+      this.load = true
+      const products: any = await this.axios.get('products/get-many')
+
+      this.$store.commit('setProducts', products)
+      this.changeType()
+
+      this.load = false
+    },
+    async addProduct () {
+      try {
+        const products: any = await this.axios.get('products/get-many')
+
+        this.$store.commit('addProducts', products)
+        this.load = false
+      } catch (e) {
+        this.load = false
+      }
+    },
   },
-  mounted () {},
+  mounted () {
+    this.addProduct()
+  },
 })
 </script>
 
@@ -76,6 +125,9 @@ export default defineComponent({
 
   &-body {
     width: 100%;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
     &-header {
       width: 100%;
       height: 60px;
